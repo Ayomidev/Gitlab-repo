@@ -41,3 +41,4 @@ deploy_job:
     - cat dist/output.txt
   dependencies:
     - build_job # Use build artifacts (node_modules)
+
