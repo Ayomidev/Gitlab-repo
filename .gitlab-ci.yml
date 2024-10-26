@@ -1,0 +1,43 @@
+image: ruby:3.1
+
+before_script:
+  - apt-get update
+  - apt-get install -y curl
+  - curl -sL https://deb.nodesource.com/setup_16.x | bash -
+  - apt-get install -y nodejs
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - echo "Building the project..."
+    - npm install # Install npm dependencies
+    - mkdir dist
+    - echo "Build output" > dist/output.txt
+  artifacts:
+    paths:
+      - node_modules/ # Save dependencies for next jobs
+      - dist/
+
+test_job:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - npm test # Run test suite
+    - cat dist/output.txt
+  dependencies:
+    - build_job # Use build artifacts (node_modules)
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Deploying the project..."
+    #    - Add your deployment commands here
+    - echo "Using variable $MY_VARIABLE"
+    - cat dist/output.txt
+  dependencies:
+    - build_job # Use build artifacts (node_modules)
